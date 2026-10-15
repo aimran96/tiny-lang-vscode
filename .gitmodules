@@ -1,0 +1,3 @@
+[submodule "tinylang"]
+	path = tinylang
+	url = https://github.com/aimran96/tiny-lang-hindi
