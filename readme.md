@@ -91,6 +91,7 @@ Define tasks in `.vscode/tasks.json` (the `tinylang` task type). Run via **Tasks
     }
   ]
 }
+```
 
 ## Troubleshooting
 
