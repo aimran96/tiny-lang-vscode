@@ -34,8 +34,12 @@ export class TinyCompletionProvider implements vscode.CompletionItemProvider {
           : `${b.name} (reserved — not callable in current grammar)`;
         item.documentation = new vscode.MarkdownString(b.doc);
         if (b.callable) {
-          item.insertText = new vscode.SnippetString(`${b.snippet};`);
+          // Insert in the script the user picked (Hindi label -> Hindi call).
+          const placeholders = b.params.map((p, i) => `\${${i + 1}:${p.name}}`).join(', ');
+          item.insertText = new vscode.SnippetString(`${label}(${placeholders});`);
         }
+        // Match in either script: typing latin surfaces Hindi items and vice versa.
+        item.filterText = b.hindi ? `${b.name} ${b.hindi}` : b.name;
         items.push(item);
       }
     }
@@ -45,6 +49,7 @@ export class TinyCompletionProvider implements vscode.CompletionItemProvider {
         const item = new vscode.CompletionItem(label, vscode.CompletionItemKind.Keyword);
         item.detail = 'Tiny Language keyword';
         item.documentation = new vscode.MarkdownString(kw.doc);
+        item.filterText = kw.names.join(' ');
         items.push(item);
       }
     }
