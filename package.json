@@ -2,9 +2,14 @@
   "name": "tinylang-vscode",
   "displayName": "Tiny Language",
   "description": "VS Code IDE support for Tiny Language (English + Hindi keywords, ANTLR4/Java interpreter).",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "publisher": "tinylang",
   "license": "MIT",
+  "icon": "images/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimran96/tiny-lang-vscode"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -96,6 +101,24 @@
         }
       ]
     },
+    "taskDefinitions": [
+      {
+        "type": "tinylang",
+        "required": [
+          "file"
+        ],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Tiny Language file to run (.tinylang/.english/.hindi)."
+          },
+          "args": {
+            "type": "string",
+            "description": "Extra arguments appended after the filename (space-separated)."
+          }
+        }
+      }
+    ],
     "configuration": {
       "title": "Tiny Language",
       "properties": {
@@ -128,12 +151,14 @@
     "watch": "tsc -watch -p ./",
     "lint": "echo \"lint: no linter configured yet (Phase 3)\"",
     "package": "vsce package",
-    "test": "echo \"test: no tests yet (Phase 3)\" && exit 0"
+    "test": "npm run compile && node scripts/smoke.js"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",
     "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.24.0",
     "typescript": "^5.3.3",
-    "@vscode/vsce": "^2.24.0"
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.3.2"
   }
 }

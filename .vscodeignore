@@ -1,8 +1,8 @@
 .vscode/**
 .git/**
-tinylang/src/**
-tinylang/bin/**
-tinylang/.settings/**
+.github/**
 node_modules/**
+scripts/**
 src/**
 tsconfig.json
+tinylang/tinylang/**

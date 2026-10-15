@@ -3,13 +3,22 @@ import * as fs from 'fs';
 import { spawnSync } from 'child_process';
 import * as vscode from 'vscode';
 
+import { buildCommandLine } from './shellQuote';
+
 function getConfig(): vscode.WorkspaceConfiguration {
   return vscode.workspace.getConfiguration('tinylang');
 }
 
-function getJavaPath(): string {
+export function getJavaPath(): string {
   const configured = getConfig().get<string>('javaPath', 'java').trim();
   return configured.length > 0 ? configured : 'java';
+}
+
+/** Install directory of this extension (set at activation; vsix is self-contained). */
+let extensionDir = '';
+
+export function initRuntimePaths(context: vscode.ExtensionContext): void {
+  extensionDir = context.extensionPath;
 }
 
 function candidateJarPaths(): string[] {
@@ -17,6 +26,10 @@ function candidateJarPaths(): string[] {
   const out: string[] = [];
   if (configured.length > 0) {
     out.push(configured);
+  }
+  if (extensionDir) {
+    // Interpreter bundled inside the installed extension — works without a checkout.
+    out.push(path.join(extensionDir, 'tinylang', 'Interpreter.jar'));
   }
   const folders = vscode.workspace.workspaceFolders?.map((f) => f.uri.fsPath) ?? [];
   // Bundled/checked-out interpreter next to the extension workspace.
@@ -28,7 +41,7 @@ function candidateJarPaths(): string[] {
   return out;
 }
 
-function resolveJar(activeFileDir?: string): string | undefined {
+export function resolveJar(activeFileDir?: string): string | undefined {
   for (const candidate of candidateJarPaths()) {
     if (candidate && fs.existsSync(candidate)) {
       return candidate;
@@ -52,7 +65,7 @@ function resolveJar(activeFileDir?: string): string | undefined {
   return undefined;
 }
 
-function resolveWorkingDirectory(activeFile?: string): string | undefined {
+export function resolveWorkingDirectory(activeFile?: string): string | undefined {
   const configured = (getConfig().get<string>('workingDirectory', '') ?? '').trim();
   if (configured.length > 0) {
     return configured;
@@ -63,19 +76,7 @@ function resolveWorkingDirectory(activeFile?: string): string | undefined {
   return vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
 }
 
-/** Quote one argv element for `terminal.sendText` without unsafe shell concatenation. */
-function quoteForTerminal(arg: string): string {
-  if (arg.length === 0) {
-    return '""';
-  }
-  if (!/[\s"`'$&|<>^()]/.test(arg)) {
-    return arg;
-  }
-  // Prefer double quotes; escape embedded double quotes, backslashes, and `$`/backtick.
-  return `"${arg.replace(/(["\\$`])/g, '\\$1')}"`;
-}
-
-function splitArgs(raw: string): string[] {
+export function splitArgs(raw: string): string[] {
   // Minimal space-separated split honoring double quotes (program args are simple values).
   const out: string[] = [];
   let current = '';
@@ -101,7 +102,7 @@ function splitArgs(raw: string): string[] {
   return out;
 }
 
-function ensureTrusted(): boolean {
+export function ensureTrusted(): boolean {
   if (!vscode.workspace.isTrusted) {
     void vscode.window.showWarningMessage(
       'Tiny Language run blocked: workspace is not trusted. Trust the workspace and try again.'
@@ -111,8 +112,7 @@ function ensureTrusted(): boolean {
   return true;
 }
 
-function validateJava(javaPath: string): boolean {
-  const result = spawnSync(javaPath, ['-version'], { encoding: 'utf8' });
+export function validateJava(javaPath: string): boolean {  const result = spawnSync(javaPath, ['-version'], { encoding: 'utf8' });
   if (result.error || result.status !== 0) {
     void vscode.window.showErrorMessage(
       `Tiny Language: Java runtime not found at "${javaPath}". Install a JRE and/or set "tinylang.javaPath".`
@@ -142,6 +142,15 @@ function getOrCreateTerminal(cwd?: string): vscode.Terminal {
     return existing;
   }
   return vscode.window.createTerminal({ name: 'Tiny Language', cwd });
+}
+
+/** True when the default terminal shell needs PowerShell quoting (`& ` prefix). */
+export function usesPowerShell(): boolean {
+  return /powershell|pwsh/i.test(vscode.env.shell);
+}
+
+function sendCommand(terminal: vscode.Terminal, argv: string[]): void {
+  terminal.sendText(buildCommandLine(argv, { powershell: usesPowerShell() }));
 }
 
 async function runFileCommand(uri?: vscode.Uri, extraArgs?: string): Promise<void> {
@@ -176,10 +185,11 @@ async function runFileCommand(uri?: vscode.Uri, extraArgs?: string): Promise<voi
   if (extraArgs && extraArgs.trim().length > 0) {
     command.push(...splitArgs(extraArgs));
   }
-  terminal.sendText(command.map(quoteForTerminal).join(' '));
+  sendCommand(terminal, command);
 }
 
 export function registerRunCommands(context: vscode.ExtensionContext): void {
+  initRuntimePaths(context);
   context.subscriptions.push(
     vscode.commands.registerCommand('tinylang.runFile', (uri?: vscode.Uri) => runFileCommand(uri)),
     vscode.commands.registerCommand('tinylang.runWithArgs', async (uri?: vscode.Uri) => {
@@ -212,7 +222,7 @@ export function registerRunCommands(context: vscode.ExtensionContext): void {
       const cwd = resolveWorkingDirectory(activeFile);
       const terminal = getOrCreateTerminal(cwd);
       terminal.show(true);
-      terminal.sendText([javaPath, '-Dfile.encoding=UTF-8', '-jar', jar].map(quoteForTerminal).join(' '));
+      sendCommand(terminal, [javaPath, '-Dfile.encoding=UTF-8', '-jar', jar]);
     })
   );
 }
