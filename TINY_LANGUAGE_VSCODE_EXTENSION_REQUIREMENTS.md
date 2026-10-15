@@ -8,8 +8,8 @@ The extension must work with the existing interpreter and grammar rather than in
 
 ## 2. Inputs and assumptions
 
-- Obtain the ANTLR4 `.g4` lexer/parser grammar, Java interpreter/launcher, example `.tiny` programs (or the actual file extension), and test cases.
-- Confirm the real source file extension(s), comment syntax, grammar constructs, entry point, shell EOF behavior, runtime invocation, and error format from the repository.
+- Obtain the ANTLR4 `.g4` lexer/parser grammar, Java interpreter/launcher, example `.tinylang`/`.english`/`.hindi` programs, and test cases.
+- Confirm comment syntax, grammar constructs, entry point, shell EOF behavior, runtime invocation, and error format from the repository (file extensions decided as `.tinylang`, `.english`, `.hindi`).
 - Known CLI behavior: `tinylang [filename] [filename] [...]`; no filename enters interactive shell mode.
 - Java runtime is required by the current interpreter.
 - Known built-ins: `println` / `प्रिंटलाइन`, `print` / `प्रिंट`, `assert` / `दावा`, `input` / `इनपुट`, `size` / `माप`.
@@ -17,27 +17,27 @@ The extension must work with the existing interpreter and grammar rather than in
 
 ## 3. Language registration and editing
 
-- [ ] Register a unique VS Code language ID, display name, and verified file extension(s).
-- [ ] Provide a TextMate grammar for syntax highlighting.
-- [ ] Highlight English and Hindi keywords, built-in functions, strings, numbers, booleans, identifiers, operators, punctuation, and comments where supported.
-- [ ] Support Unicode/Hindi identifiers and text correctly; do not assume ASCII-only tokenization.
-- [ ] Configure line and block comments only where supported by the grammar.
-- [ ] Configure bracket matching, auto-closing pairs, surrounding pairs, indentation, and folding.
-- [ ] Add language-aware snippets for verified constructs and built-ins, including Hindi aliases.
-- [ ] Ensure the extension behaves correctly with light and dark themes without hardcoded token colors.
+- [x] Register a unique VS Code language ID, display name, and associate `.tinylang`, `.english`, `.hindi` file extensions (verified against grammar/repo).
+- [x] Provide a TextMate grammar for syntax highlighting.
+- [x] Highlight English and Hindi keywords, built-in functions, strings, numbers, booleans, identifiers, operators, punctuation, and comments where supported.
+- [x] Support Unicode/Hindi identifiers and text correctly; do not assume ASCII-only tokenization.
+- [x] Configure line and block comments only where supported by the grammar.
+- [x] Configure bracket matching, auto-closing pairs, surrounding pairs, indentation, and folding.
+- [x] Add language-aware snippets for verified constructs and built-ins, including Hindi aliases.
+- [x] Ensure the extension behaves correctly with light and dark themes without hardcoded token colors.
 
 ## 4. Execution and project workflow
 
-- [ ] Add **Run Tiny Language File** command and editor title/context-menu action.
-- [ ] Execute the active file using a configurable interpreter executable or Java JAR/classpath launcher.
-- [ ] Support paths with spaces and Unicode characters without unsafe shell concatenation.
-- [ ] Show standard output, standard error, and exit status in an integrated terminal.
-- [ ] Allow console input when the running program requests it.
-- [ ] Provide **Run with Arguments** support and configurable working directory.
-- [ ] Add an optional **Start Tiny Language Shell** command.
-- [ ] Validate interpreter availability and Java runtime prerequisites; report actionable errors.
+- [x] Add **Run Tiny Language File** command and editor title/context-menu action.
+- [x] Execute the active file using a configurable interpreter executable or Java JAR/classpath launcher.
+- [x] Support paths with spaces and Unicode characters without unsafe shell concatenation.
+- [x] Show standard output, standard error, and exit status in an integrated terminal.
+- [x] Allow console input when the running program requests it.
+- [x] Provide **Run with Arguments** support and configurable working directory.
+- [x] Add an optional **Start Tiny Language Shell** command.
+- [x] Validate interpreter availability and Java runtime prerequisites; report actionable errors.
 - [ ] Provide a documented task definition or generated `tasks.json` example for repeatable runs.
-- [ ] Respect VS Code workspace trust and avoid executing untrusted workspace code automatically.
+- [x] Respect VS Code workspace trust and avoid executing untrusted workspace code automatically.
 
 ## 5. Autocomplete and editor assistance
 
@@ -80,11 +80,11 @@ The extension must work with the existing interpreter and grammar rather than in
 
 ## 9. Settings and packaging
 
-- [ ] Define settings for interpreter path, JAR path (if relevant), Java path, program arguments, working directory, validation mode, and optional formatting preferences.
+- [x] Define settings for interpreter path, JAR path (if relevant), Java path, program arguments, working directory, validation mode, and optional formatting preferences.
 - [ ] Document installation, setup, running files, shell mode, supported features, and troubleshooting in README.
 - [ ] Include extension icon, changelog, license, and Marketplace metadata.
 - [ ] Bundle generated grammar assets and runtime dependencies appropriately.
-- [ ] Build a locally installable `.vsix` using `@vscode/vsce`.
+- [x] Build a locally installable `.vsix` using `@vscode/vsce`.
 - [ ] Prepare optional publication to the VS Code Marketplace and Open VSX.
 - [ ] Set up automated linting, compilation, tests, and packaging in CI.
 
@@ -104,11 +104,11 @@ The extension must work with the existing interpreter and grammar rather than in
 
 ### Phase 1 — Minimum viable extension
 
-1. Inspect the source repository, grammar, launcher, and test programs.
-2. Register the language and implement TextMate syntax highlighting.
-3. Add editor configuration and verified snippets.
-4. Implement Run File and Start Shell commands with settings.
-5. Package and test a working `.vsix`.
+1. [x] Inspect the source repository, grammar, launcher, and test programs. — Done 2026-10-15: verified `tinylang/Language.g4`, `tinylang.bat` (`java -Dfile.encoding=UTF-8 -jar Interpreter.jar`), `test.english`/`test.hindi`; extensions decided as `.tinylang`, `.english`, `.hindi`.
+2. [x] Register the language and implement TextMate syntax highlighting. — Done 2026-10-15: `package.json` registers `tinylang` for `.tinylang`/`.english`/`.hindi`; `syntaxes/tinylang.tmLanguage.json` covers EN+HI keywords/builtins/strings/numbers/comments.
+3. [x] Add editor configuration and verified snippets. — Done 2026-10-15: `language-configuration.json` (comments/brackets/indent/wordPattern) + `snippets/tinylang.code-snippets` validated against `Language.g4`/`test.*`.
+4. [x] Implement Run File and Start Shell commands with settings. — Done 2026-10-15: `tinylang.runFile`/`runWithArgs`/`startShell` in `src/commands/run.ts`, integrated terminal, Unicode/space-safe quoting, `tinylang.javaPath`/`jarPath`/`programArgs`/`workingDirectory`, trust + Java/JAR validation; `test.english`/`test.hindi` pass via `Interpreter.jar`.
+5. [x] Package and test a working `.vsix`. — Done 2026-10-15: `tinylang-vscode-0.0.1.vsix` built via `vsce package`; `tsc` clean, JSON configs valid, `test.english`/`test.hindi` pass.
 
 **Exit criterion:** A user can open a Tiny Language file, see correct Hindi/English highlighting, edit with basic conveniences, and run the program in VS Code.
 

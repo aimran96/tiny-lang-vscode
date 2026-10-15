@@ -1,0 +1,67 @@
+{
+  "Tiny function": {
+    "prefix": ["function", "प्रक्रिया"],
+    "body": ["function ${1:name}(${2:params}) {", "\t${0}", "}"],
+    "description": "Function declaration (function / प्रक्रिया). Verified against Language.g4 functionDecl."
+  },
+  "Tiny if": {
+    "prefix": ["if", "अगर"],
+    "body": ["if ${1:condition} {", "\t${0}", "}"],
+    "description": "If statement (if / अगर)."
+  },
+  "Tiny if-else": {
+    "prefix": ["ifelse"],
+    "body": ["if ${1:condition} {", "\t${2}", "} else {", "\t${0}", "}"],
+    "description": "If-else statement."
+  },
+  "Tiny else-if": {
+    "prefix": ["elseif"],
+    "body": ["else if ${1:condition} {", "\t${0}", "}"],
+    "description": "Else-if branch (else if / अन्य अगर)."
+  },
+  "Tiny for-to (Hindi/English)": {
+    "prefix": ["forto", "चलो"],
+    "body": ["for ${1:i}=${2:1} to ${3:10} {", "\t${0}", "}"],
+    "description": "For-to loop (for i=… to … / चलो … से …). Verified against forToStatement."
+  },
+  "Tiny for C-style": {
+    "prefix": ["for"],
+    "body": ["for (${1:i} = ${2:1}; ${3:i <= 10}; ${4:i = i + 1}) {", "\t${0}", "}"],
+    "description": "C-style for loop. Verified against forStatement."
+  },
+  "Tiny while": {
+    "prefix": ["while", "जबकि"],
+    "body": ["while ${1:condition} {", "\t${0}", "}"],
+    "description": "While loop (while / जबकि)."
+  },
+  "Tiny return": {
+    "prefix": ["return", "लौटाऊ"],
+    "body": ["return ${0:expression};"],
+    "description": "Return statement (return / लौटाऊ)."
+  },
+  "Tiny println": {
+    "prefix": ["println", "प्रिंटलाइन"],
+    "body": ["println(${0:expression});"],
+    "description": "Print with newline (println / प्रिंटलाइन)."
+  },
+  "Tiny print": {
+    "prefix": ["print", "प्रिंट"],
+    "body": ["print(${0:expression});"],
+    "description": "Print without newline (print / प्रिंट)."
+  },
+  "Tiny assert": {
+    "prefix": ["assert", "दावा"],
+    "body": ["assert(${0:condition});"],
+    "description": "Assertion (assert / दावा)."
+  },
+  "Tiny input": {
+    "prefix": ["input", "इनपुट"],
+    "body": ["input(${0:\"prompt\"})"],
+    "description": "Read input (input / इनपुट)."
+  },
+  "Tiny size": {
+    "prefix": ["size", "माप"],
+    "body": ["size(${0:list})"],
+    "description": "List size (size / माप)."
+  }
+}

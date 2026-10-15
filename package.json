@@ -1,0 +1,139 @@
+{
+  "name": "tinylang-vscode",
+  "displayName": "Tiny Language",
+  "description": "VS Code IDE support for Tiny Language (English + Hindi keywords, ANTLR4/Java interpreter).",
+  "version": "0.0.1",
+  "publisher": "tinylang",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "tinylang",
+    "tiny language",
+    "hindi",
+    "antlr"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:tinylang",
+    "onCommand:tinylang.runFile",
+    "onCommand:tinylang.runWithArgs",
+    "onCommand:tinylang.startShell"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "tinylang",
+        "aliases": [
+          "Tiny Language",
+          "tinylang"
+        ],
+        "extensions": [
+          ".tinylang",
+          ".english",
+          ".hindi"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "tinylang",
+        "scopeName": "source.tinylang",
+        "path": "./syntaxes/tinylang.tmLanguage.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "tinylang",
+        "path": "./snippets/tinylang.code-snippets"
+      }
+    ],
+    "commands": [
+      {
+        "command": "tinylang.runFile",
+        "title": "Run Tiny Language File"
+      },
+      {
+        "command": "tinylang.runWithArgs",
+        "title": "Run Tiny Language File with Arguments"
+      },
+      {
+        "command": "tinylang.startShell",
+        "title": "Start Tiny Language Shell"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "tinylang.runFile",
+          "when": "resourceLangId == tinylang",
+          "group": "navigation"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "tinylang.runFile",
+          "when": "editorLangId == tinylang"
+        },
+        {
+          "command": "tinylang.runWithArgs",
+          "when": "editorLangId == tinylang"
+        },
+        {
+          "command": "tinylang.startShell"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "tinylang.runFile",
+          "when": "resourceLangId == tinylang",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Tiny Language",
+      "properties": {
+        "tinylang.javaPath": {
+          "type": "string",
+          "default": "java",
+          "description": "Path to the Java executable used to launch the Tiny Language interpreter."
+        },
+        "tinylang.jarPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to Interpreter.jar. Empty = auto-detect bundled tinylang/Interpreter.jar, then workspace tinylang/Interpreter.jar."
+        },
+        "tinylang.programArgs": {
+          "type": "string",
+          "default": "",
+          "description": "Extra arguments appended after the filename when running (space-separated)."
+        },
+        "tinylang.workingDirectory": {
+          "type": "string",
+          "default": "",
+          "description": "Working directory for runs. Empty = directory of the active file, else workspace folder."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "echo \"lint: no linter configured yet (Phase 3)\"",
+    "package": "vsce package",
+    "test": "echo \"test: no tests yet (Phase 3)\" && exit 0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.3",
+    "@vscode/vsce": "^2.24.0"
+  }
+}

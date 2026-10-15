@@ -1,0 +1,102 @@
+{
+  "name": "Tiny Language",
+  "scopeName": "source.tinylang",
+  "fileTypes": ["tinylang", "english", "hindi"],
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#keywords" },
+    { "include": "#builtins" },
+    { "include": "#constants" },
+    { "include": "#operators" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.tinylang",
+          "match": "//.*$"
+        },
+        {
+          "name": "comment.block.tinylang",
+          "begin": "/\\*",
+          "end": "\\*/"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.tinylang",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [{ "name": "constant.character.escape.tinylang", "match": "\\\\." }]
+        },
+        {
+          "name": "string.quoted.single.tinylang",
+          "begin": "'",
+          "end": "'",
+          "patterns": [{ "name": "constant.character.escape.tinylang", "match": "\\\\." }]
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.tinylang",
+          "match": "(?<![\\w\\u0900-\\u097F])(?:[0-9]+(?:\\.[0-9]*)?|[\\u0966-\\u096F]+(?:\\.[\\u0966-\\u096F]*)?)(?![\\w\\u0900-\\u097F])"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.tinylang",
+          "match": "(?<![\\w\\u0900-\\u097F])(?:function|if|else|return|for|while|to|in|प्रक्रिया|अगर|अन्य|लौटाऊ|लौटां|चलो|जबकि|से|में)(?![\\w\\u0900-\\u097F])"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.tinylang",
+          "match": "(?<![\\w\\u0900-\\u097F])(?:println|print|assert|input|size|toString|toNumber|toBool|strLength|sqrRoot|प्रिंटलाइन|प्रिंट|दावा|इनपुट|माप|टेक्स्टबनाओ|संख्याबनाओ|बूलियनबनाओ|टेक्स्टकीलंबाई|वर्गमूल)(?![\\w\\u0900-\\u097F])"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "constant.language.boolean.tinylang",
+          "match": "(?<![\\w\\u0900-\\u097F])(?:true|false|सुच|सच|ग़लत|ग़लत)(?![\\w\\u0900-\\u097F])"
+        },
+        {
+          "name": "constant.language.null.tinylang",
+          "match": "(?<![\\w\\u0900-\\u097F])(?:null|खाली)(?![\\w\\u0900-\\u097F])"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.tinylang",
+          "match": "(==|!=|>=|<=|&&|\\|\\||\\^\\^|[+\\-*/%^><=!?:])"
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.tinylang",
+          "match": "[;,]"
+        },
+        {
+          "name": "punctuation.bracket.tinylang",
+          "match": "[\\{\\}\\[\\]\\(\\)]"
+        }
+      ]
+    }
+  }
+}
